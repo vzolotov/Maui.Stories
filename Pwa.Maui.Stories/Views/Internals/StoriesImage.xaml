@@ -2,13 +2,16 @@
 <StackLayout xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Pwa.Maui.Stories.Views.Internals.StoriesImage"
-             x:Name="parent" Orientation="Vertical">
-     <Image 
+             x:Name="parent" Orientation="Vertical" Padding="0">
+     <Image
+        Margin="0"
         Source="{Binding Image}"
-        Aspect="AspectFit"
+        Aspect="AspectFill"
         HeightRequest="90"
         WidthRequest="90"/>
     <Label
+        Padding="0"
+        Margin="0"
         Text="{Binding Text}"
         HorizontalTextAlignment="Center"
         HorizontalOptions="Center"

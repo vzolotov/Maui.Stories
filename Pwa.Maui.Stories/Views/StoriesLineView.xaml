@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+<StackLayout xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="Pwa.Maui.Stories.Views.StoriesLineView"
              xmlns:internals="clr-namespace:Pwa.Maui.Stories.Views.Internals"
-             x:Name="storiesLine">
-    <CollectionView
-        x:Name="images"
-        Margin="10"
-        ItemsSource="{Binding Items}">
-        <CollectionView.ItemTemplate>
+             x:Name="storiesLine"
+             Orientation="Horizontal"
+             BindableLayout.ItemsSource="{Binding Items}">
+    <BindableLayout.ItemTemplate>
             <DataTemplate >
                 <StackLayout
                     Orientation="Vertical"
-                    VerticalOptions="Center">
+                    VerticalOptions="Center"
+                    Spacing="0"
+                    Padding="0">
                     <StackLayout.GestureRecognizers>
                         <TapGestureRecognizer
                             Tapped="InputElement_OnTapped"
@@ -25,15 +25,13 @@
                         Completed="StoriesAnimatedBar_OnCompleted"
                         WidthRequest="{Binding Source={x:Reference}, Path=WidthRequest}"/>
                     <internals:StoriesImage
+                        VerticalOptions="StartAndExpand"
                         BindingContext="{Binding}"
                         x:Name="image"
-                        IsDescriptionVisible="{Binding IsDescriptionVisible, Source={x:Reference storiesLine}}"/>
+                        IsDescriptionVisible="{Binding IsDescriptionVisible, Source={x:Reference storiesLine}}"
+                        Padding="0"/>
                 </StackLayout>
             </DataTemplate>
-        </CollectionView.ItemTemplate>
-        <CollectionView.ItemsLayout>
-            <LinearItemsLayout Orientation="Horizontal" />
-        </CollectionView.ItemsLayout>
-    </CollectionView>
-</ContentView>
+    </BindableLayout.ItemTemplate>
+</StackLayout>
 

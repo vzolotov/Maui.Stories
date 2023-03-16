@@ -18,7 +18,7 @@ namespace Pwa.Maui.Stories.ViewModels
 
         [ObservableProperty] string? _text;
         [ObservableProperty] Uri _image;
-        [ObservableProperty] bool _isStarted;
+        [ObservableProperty] bool _isStarted = false;
 
     }
 }

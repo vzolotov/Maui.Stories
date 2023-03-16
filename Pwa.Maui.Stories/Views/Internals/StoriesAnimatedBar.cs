@@ -11,6 +11,9 @@ namespace Pwa.Maui.Stories.Views.Internals
         private const double Maximum = 1; //Progress <= 1
         private double _stepValue;
         private IDispatcherTimer? _dispatcherTimer;
+        private object _locker = new object();
+        private double _interval = 0;
+
         public bool Started { get; private set; } = false;
         public bool Paused { get; private set; } = false;
         public event EventHandler Completed;
@@ -20,11 +23,25 @@ namespace Pwa.Maui.Stories.Views.Internals
         }
 
         [AutoBindable] bool _isComplete;
-        [AutoBindable(OnChanged = nameof(OnIsWorkedChanging))] bool _isWorked;
         [AutoBindable] double _durationSeconds;
+
+        public static readonly BindableProperty IsWorkedProperty = BindableProperty.Create(
+                                                                    nameof(IsWorked),
+                                                                    typeof(bool),
+                                                                    typeof(StoriesAnimatedBar),
+                                                                    defaultBindingMode: BindingMode.TwoWay,
+                                                                    defaultValue: false,
+                                                                    propertyChanged: OnIsWorkedChanging);
+
+        public bool IsWorked
+        {
+            get => (bool)GetValue(IsWorkedProperty);
+            set => SetValue(IsWorkedProperty, value);
+        }
 
         void Start()
         {
+            _interval = Maximum / ((DurationSeconds * 1000) / StepMilliseconds);
             if(IsComplete || !Started)
             {
                 _dispatcherTimer = Dispatcher.CreateTimer();
@@ -36,24 +53,26 @@ namespace Pwa.Maui.Stories.Views.Internals
             Paused = false;
             _dispatcherTimer?.Start();
         }
+
         private void DispatcherTimerOnTick(object? sender, EventArgs e)
         {
-            if(Progress >= Maximum)
+            lock(_locker)
             {
-                Stop();
-                IsComplete = true;
-                Completed?.Invoke(this, EventArgs.Empty);
+                if(Progress >= Maximum && !IsComplete)
+                {
+                    IsWorked = false;
+                    IsComplete = true;
+                    Completed?.Invoke(this, EventArgs.Empty);
+                }
+
+                Progress += _interval;
             }
-            //it would be nice to put it in MaxSecondsProperty setter,
-            //but the order of calling avalonia properties is not defined
-            var interval = (DurationSeconds * 1000) / StepMilliseconds;
-            Progress += Maximum / interval;
-            Debug.WriteLine(Progress);
         }
 
 
         public void Pause()
         {
+            _dispatcherTimer.Tick -= DispatcherTimerOnTick;
             _dispatcherTimer?.Stop();
             Started = false;
             Paused = true;
@@ -61,26 +80,32 @@ namespace Pwa.Maui.Stories.Views.Internals
 
         public void Stop()
         {
-            _dispatcherTimer?.Stop();
             _dispatcherTimer.Tick -= DispatcherTimerOnTick;
+            _dispatcherTimer.Stop();
             Started = false;
             Paused = false;
         }
 
-        void OnIsWorkedChanging(bool value)
+        static void OnIsWorkedChanging(Microsoft.Maui.Controls.BindableObject bindable, object oldValue, object newValue)
         {
-            if(IsWorked)
+            if(bindable is StoriesAnimatedBar bar)
             {
-                this.Started = false;
-                this.Paused = false;
-                this.IsComplete = false;
-                this.Progress = 0;
-                if(!Started)
-                    Start();
-            }
-            else
-            {
-                Stop();
+                if(bar.IsWorked)
+                {
+                    bar.Started = false;
+                    if(!bar.Paused)
+                    {
+                        bar.Progress = 0;
+                    }
+                    bar.Paused = false;
+                    bar.IsComplete = false;
+                    if(!bar.Started)
+                        bar.Start();
+                }
+                else
+                {
+                    bar.Stop();
+                }
             }
         }
     }

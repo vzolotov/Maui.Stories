@@ -13,6 +13,9 @@
                 IsDescriptionVisible="{Binding Source={x:Reference storiesView}, Path=IsDescriptionVisible}"/>
             <Image
                 x:Name="image"
+                Aspect="AspectFill"
+                HorizontalOptions="CenterAndExpand"
+                VerticalOptions="CenterAndExpand"
                 Grid.Row="1"
                 Source="{Binding Source={x:Reference line}, Path=CurrentItem.Image}"/>
         </Grid>

@@ -8,6 +8,7 @@
         <demo:MainViewModel/>
     </ContentPage.BindingContext>
   <views:StoriesView
+        Margin="10"
         x:Name="stories1"
         DurationSeconds="8"
         BindingContext="{Binding}"/>

@@ -6,7 +6,7 @@ using Pwa.Maui.Stories.Views.Internals;
 
 namespace Pwa.Maui.Stories.Views;
 
-public partial class StoriesLineView : ContentView
+public partial class StoriesLineView : StackLayout
 {
     public event EventHandler<StoriesImageViewModel?> CurrentItemChanging;
 
@@ -28,10 +28,7 @@ public partial class StoriesLineView : ContentView
         {
             CurrentItem = Items?.FirstOrDefault();
         }
-        else
-        {
-            CurrentItem.IsStarted = true;
-        }
+        CurrentItem.IsStarted = true;
     }
 
     public void Stop()
@@ -41,9 +38,10 @@ public partial class StoriesLineView : ContentView
 
     private void OnCurrentItemChanging(StoriesImageViewModel newValue)
     {
-        SelectedIndex = Items?.IndexOf(newValue) ?? 0;
+        SelectedIndex = Items != null ? Items.IndexOf(newValue) : 0;
         CurrentItemChanging?.Invoke(this, CurrentItem);
         ItemTapCommand?.Execute(CurrentItem);
+        CurrentItem.IsStarted = true;
     }
     private void InputElement_OnTapped(object sender, TappedEventArgs e)
     {
@@ -66,9 +64,13 @@ public partial class StoriesLineView : ContentView
     private void StoriesAnimatedBar_OnCompleted(object sender, EventArgs e)
     {
         var bar = sender as StoriesAnimatedBar;
-        if(Items != null && bar?.BindingContext is StoriesImageViewModel story && story != Items.Last())
+        if(Items != null && bar?.BindingContext is StoriesImageViewModel story)
         {
-            CurrentItem = Items[SelectedIndex + 1];
+            if(story != Items.Last())
+            {
+                CurrentItem = Items[Items.IndexOf(story) + 1];
+            }
+
         }
     }
 }
