@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFrameworks>net7.0;net7.0-android;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
+		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
+		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
+		<!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
+		<RootNamespace>Pwa.Maui.Stories</RootNamespace>
+		<UseMaui>true</UseMaui>
+		<SingleProject>true</SingleProject>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">14.2</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'maccatalyst'">14.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'android'">21.0</SupportedOSPlatformVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</SupportedOSPlatformVersion>
+		<TargetPlatformMinVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'windows'">10.0.17763.0</TargetPlatformMinVersion>
+		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
+		<Nullable>enable</Nullable>
+		<PackageVersion>0.0.1</PackageVersion>
+		<Title>Stories control for MAUI</Title>
+		<Authors>V.Zolotov</Authors>
+		<Copyright>V.Zolotov</Copyright>
+		<PackageTags>MAUI, Stories</PackageTags>
+		<PackageId>Pwa.Maui.Stories</PackageId>
+		<PackageProjectUrl>https://github.com/vzolotov/Avalonia.Stories</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/vzolotov/Avalonia.Stories</RepositoryUrl>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<PackageLicenseFile>LICENSE</PackageLicenseFile>
+		<Description>is similar like Instagram Stories</Description>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net7.0-ios|AnyCPU'">
+		<CreatePackage>false</CreatePackage>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Remove="ViewModels\" />
+		<None Remove="Views\" />
+		<None Remove="Views\Internals\" />
+	</ItemGroup>
+	<ItemGroup>
+		<Folder Include="ViewModels\" />
+		<Folder Include="Views\" />
+		<Folder Include="Views\Internals\" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="..\README.md" Pack="true" PackagePath="\" />
+		<None Include="..\LICENSE" Pack="true" PackagePath="\" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0" />
+		<PackageReference Include="M.BindableProperty.Generator" Version="0.9.3" />
+	</ItemGroup>
+</Project>

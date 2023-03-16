@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="Pwa.Maui.Stories.Views.StoriesLineView"
+             xmlns:internals="clr-namespace:Pwa.Maui.Stories.Views.Internals"
+             x:Name="storiesLine">
+    <CollectionView
+        x:Name="images"
+        Margin="10"
+        ItemsSource="{Binding Items}">
+        <CollectionView.ItemTemplate>
+            <DataTemplate >
+                <StackLayout
+                    Orientation="Vertical"
+                    VerticalOptions="Center">
+                    <StackLayout.GestureRecognizers>
+                        <TapGestureRecognizer
+                            Tapped="InputElement_OnTapped"
+                            Command="{Binding Source={x:Reference storiesLine}, Path=ItemTapCommand}"/>
+                    </StackLayout.GestureRecognizers>
+                    <internals:StoriesAnimatedBar
+                        Progress="0"
+                        DurationSeconds="{Binding DurationSeconds, Source={x:Reference storiesLine}}"
+                        IsWorked="{Binding IsStarted}"
+                        Completed="StoriesAnimatedBar_OnCompleted"
+                        WidthRequest="{Binding Source={x:Reference}, Path=WidthRequest}"/>
+                    <internals:StoriesImage
+                        BindingContext="{Binding}"
+                        x:Name="image"
+                        IsDescriptionVisible="{Binding IsDescriptionVisible, Source={x:Reference storiesLine}}"/>
+                </StackLayout>
+            </DataTemplate>
+        </CollectionView.ItemTemplate>
+        <CollectionView.ItemsLayout>
+            <LinearItemsLayout Orientation="Horizontal" />
+        </CollectionView.ItemsLayout>
+    </CollectionView>
+</ContentView>
+
